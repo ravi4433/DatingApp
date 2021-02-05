@@ -31,6 +31,11 @@ namespace api
                 options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             });
             services.AddControllers();
+            services.AddCors(c=>c.AddPolicy("TCAPolicy",builder=> { 
+                builder.WithOrigins("https://localhost:4200")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +49,8 @@ namespace api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("TCAPolicy");
 
             app.UseAuthorization();
 

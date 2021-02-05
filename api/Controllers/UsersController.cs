@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Entity;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
