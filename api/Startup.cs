@@ -12,6 +12,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using api.Interfaces;
+using api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using api.Extensions;
+
 namespace api
 {
     public class Startup
@@ -26,16 +33,13 @@ namespace api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(options =>
-            {
-                options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
-            });
+            services.AddApplicationServices(_config);
+            
             services.AddControllers();
-            services.AddCors(c=>c.AddPolicy("TCAPolicy",builder=> { 
-                builder.WithOrigins("https://localhost:4200")
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
-            }));
+            
+            services.AddCorsServices(_config);
+
+            services.AddIdentityServices(_config);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +55,8 @@ namespace api
             app.UseRouting();
 
             app.UseCors("TCAPolicy");
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
